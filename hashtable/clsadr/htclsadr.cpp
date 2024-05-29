@@ -67,7 +67,7 @@ namespace lasd {
     template <typename Data>
     HashTableClsAdr<Data>::HashTableClsAdr(const HashTableClsAdr& ht){
         
-        this->hashTable.Resize(ht.Size());
+        this->hashTable.Resize(ht.M);
 
         ulong index {0};
 

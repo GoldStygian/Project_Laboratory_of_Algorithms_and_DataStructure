@@ -26,6 +26,7 @@
 #include "../binarytree/vec/binarytreevec.hpp"
 
 #include "../hashtable/opnadr/htopnadr.hpp"
+#include "../hashtable/clsadr/htclsadr.hpp"
 #include "../zlasdtest/hashtable/hashtable.hpp"
 
 using namespace std;
@@ -869,107 +870,517 @@ void MyRowTest(){
 
 }
 
-void MyTestHashInt(uint &testnum, uint &testerr){
+// template <typename T>
+// T convert(ulong value) {
+//     if constexpr (std::is_integral_v<T>) {
+//         return static_cast<T>(value);
+//     } else if constexpr (std::is_floating_point_v<T>) {
+//         return static_cast<T>(value);
+//     } else if constexpr (std::is_same_v<T, std::string>) {
+//         return std::to_string(value);
+//     } 
+//     // else {
+//     //     static_assert(always_false<T>::value, "Unsupported type");
+//     // }
+// }
+
+// template <typename Data>
+// void OpnAdrTest(uint &testnum, uint &testerr){
+
+//   uint loctestnum = 0, loctesterr = 0;
+
+//     lasd::Vector<Data> vc(20);
+//     for(ulong i = 0; i<20; ++i){
+//       vc[i] = i;
+//     }
+
+//     lasd::BST<Data> bst(vc);
+
+//     lasd::HashTableOpnAdr<Data> htopn(bst);
+
+//     Size(loctestnum, loctesterr, htopn, true, 20);
+//     for(ulong i = 0; i<20; ++i){
+//       Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+//     }
+
+//     htopn.Resize(200);
+//     Size(loctestnum, loctesterr, htopn, true, 20);
+//     for(ulong i = 0; i<20; ++i){
+//       Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+//     }
+
+//     htopn.Resize(0);
+//     Size(loctestnum, loctesterr, htopn, true, 20);
+//     for(ulong i = 0; i<20; ++i){
+//       Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+//     }
+
+//     htopn.Clear();
+//     Size(loctestnum, loctesterr, htopn, true, 0);
+//     for(ulong i = 0; i<20; ++i){
+//       Exists(loctestnum, loctesterr, htopn, false, vc[i]);
+//     }
+
+//     lasd::HashTableOpnAdr<Data> htopn2;
+//     htopn2 = htopn;
+//     Size(loctestnum, loctesterr, htopn2, true, 0);
+//     // htopn2.debug(); //OK
+
+//     htopn = std::move(htopn2);
+//     // htopn.debug(); //OK
+
+//     EqualHT(loctestnum, loctesterr, htopn, htopn2);
+
+//     for (ulong i = 0; i < 20; ++i) {
+//       InsertC(loctestnum, loctesterr, htopn, vc[i]);
+//     }
+//     NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
+    
+//     htopn.Resize(0); // to min size
+//     // htopn.debug(); //OK
+//     NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
+    
+//     htopn2 = htopn;
+//     for (ulong i = 0; i < 20; ++i) {
+//       Remove(loctestnum, loctesterr, htopn, vc[i]);
+//     }
+//     Size(loctestnum, loctesterr, htopn, true, 0);
+//     NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
+
+//     lasd::HashTableOpnAdr<Data> htopn3;
+//     htopn3 = std::move(htopn2);
+//     Size(loctestnum, loctesterr, htopn3, true, 20);
+//     for(ulong i = 0; i<20; ++i){
+//       Exists(loctestnum, loctesterr, htopn3, true, vc[i]);
+//     }
+
+//     lasd::HashTableOpnAdr<Data> htopn4(htopn3);
+//     EqualHT(loctestnum, loctesterr, htopn3, htopn4);
+//     htopn4.Resize(4000);
+//     EqualHT(loctestnum, loctesterr, htopn3, htopn4);
+//     for (ulong i = 20; i <120; ++i) { //inserisco 100
+//       InsertC(loctestnum, loctesterr, htopn4, convert<Data>(i));
+//     }
+//     Size(loctestnum, loctesterr, htopn4, true, 120);
+//     NonEqualHT(loctestnum, loctesterr, htopn3, htopn4);
+    
+//     htopn4.Resize(50);
+//     // htopn4.debug();
+//     for (ulong i = 20; i <120; ++i) { //inserisco 100
+//       Remove(loctestnum, loctesterr, htopn4, convert<Data>(i));
+//     }
+
+//     EqualHT(loctestnum, loctesterr, htopn3, htopn4);
+
+//     testnum += loctestnum;
+//     testerr += loctesterr;
+
+// }
+
+// OpnAdrTest<int>(loctestnum, loctesterr);
+// OpnAdrTest<double>(loctestnum, loctesterr);
+// OpnAdrTest<string>(loctestnum, loctesterr);
+
+void MyTestHashInt(uint &testnum, uint &testerr){ // OK
   uint loctestnum = 0, loctesterr = 0;
+  uint loctestnum2 = 0, loctesterr2 = 0;
   try{
 
-    lasd::Vector<int> vc(20);
-    for(ulong i = 0; i<20; ++i){
-      vc[i] = i;
+    uint loctestnum = 0, loctesterr = 0;
+    cout << "\nBegin of HashMap -- OpnAdr<int> Test:\n\n";
+    {
+
+      lasd::Vector<int> vc(20);
+      for(ulong i = 0; i<20; ++i){
+        vc[i] = i;
+      }
+
+      lasd::BST<int> bst(vc);
+
+      lasd::HashTableOpnAdr<int> htopn(bst);
+
+      Size(loctestnum, loctesterr, htopn, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+      }
+
+      htopn.Resize(200);
+      Size(loctestnum, loctesterr, htopn, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+      }
+
+      htopn.Resize(0);
+      Size(loctestnum, loctesterr, htopn, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+      }
+
+      htopn.Clear();
+      Size(loctestnum, loctesterr, htopn, true, 0);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn, false, vc[i]);
+      }
+
+      lasd::HashTableOpnAdr<int> htopn2;
+      htopn2 = htopn;
+      Size(loctestnum, loctesterr, htopn2, true, 0);
+      // htopn2.debug(); //OK
+
+      htopn = std::move(htopn2);
+      // htopn.debug(); //OK
+
+      EqualHT(loctestnum, loctesterr, htopn, htopn2);
+
+      for (ulong i = 0; i < 20; ++i) {
+        InsertC(loctestnum, loctesterr, htopn, vc[i]);
+      }
+      NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
+      
+      htopn.Resize(0); // to min size
+      // htopn.debug(); //OK
+      NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
+      
+      htopn2 = htopn;
+      for (ulong i = 0; i < 20; ++i) {
+        Remove(loctestnum, loctesterr, htopn, vc[i]);
+      }
+      Size(loctestnum, loctesterr, htopn, true, 0);
+      NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
+
+      lasd::HashTableOpnAdr<int> htopn3;
+      htopn3 = std::move(htopn2);
+      Size(loctestnum, loctesterr, htopn3, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn3, true, vc[i]);
+      }
+
+      lasd::HashTableOpnAdr<int> htopn4(htopn3);
+      EqualHT(loctestnum, loctesterr, htopn3, htopn4);
+      htopn4.Resize(4000);
+      EqualHT(loctestnum, loctesterr, htopn3, htopn4);
+      for (ulong i = 20; i <120; ++i) { //inserisco 100
+        InsertC(loctestnum, loctesterr, htopn4, static_cast<int>(i));
+      }
+      Size(loctestnum, loctesterr, htopn4, true, 120);
+      NonEqualHT(loctestnum, loctesterr, htopn3, htopn4);
+      
+      htopn4.Resize(50);
+      // htopn4.debug();
+      for (ulong i = 20; i <120; ++i) { //inserisco 100
+        Remove(loctestnum, loctesterr, htopn4, static_cast<int>(i));
+      }
+
+      EqualHT(loctestnum, loctesterr, htopn3, htopn4);
+
+      cout << "End of HashMap -- OpnAdr<int>  (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+      testnum += loctestnum;
+      testerr += loctesterr;
     }
 
-    lasd::BST<int> bst(vc);
+    cout << "\nBegin of HashMap -- ClsAdr<int> Test:\n\n";
+    {
+      
+      lasd::Vector<int> vc(20);
+      for(ulong i = 0; i<20; ++i){
+        vc[i] = i;
+      }
 
-    lasd::HashTableOpnAdr<int> htopn(bst);
+      lasd::BST<int> bst(vc);
 
-    Size(loctestnum, loctesterr, htopn, true, 20);
-    for(ulong i = 0; i<20; ++i){
-      Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+      lasd::HashTableClsAdr<int> htopn(bst);
+
+      Size(loctestnum2, loctesterr2, htopn, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum2, loctesterr2, htopn, true, vc[i]);
+      }
+
+      htopn.Resize(200);
+      Size(loctestnum2, loctesterr2, htopn, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum2, loctesterr2, htopn, true, vc[i]);
+      }
+
+      htopn.Resize(0);
+      Size(loctestnum2, loctesterr2, htopn, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum2, loctesterr2, htopn, true, vc[i]);
+      }
+
+      htopn.Clear();
+      Size(loctestnum2, loctesterr2, htopn, true, 0);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum2, loctesterr2, htopn, false, vc[i]);
+      }
+      
+      cout<<"debug1\n";
+      lasd::HashTableClsAdr<int> htopn2;
+      cout<<"debug2\n";
+      htopn2 = htopn;
+      cout<<"debug3\n";
+      Size(loctestnum2, loctesterr2, htopn2, true, 0);
+      // htopn2.debug(); //OK
+
+      htopn = std::move(htopn2);
+      // htopn.debug(); //OK
+
+      EqualHT(loctestnum2, loctesterr2, htopn, htopn2);
+
+      for (ulong i = 0; i < 20; ++i) {
+        InsertC(loctestnum2, loctesterr2, htopn, vc[i]);
+      }
+      NonEqualHT(loctestnum2, loctesterr2, htopn, htopn2);
+      
+      htopn.Resize(0); // to min size
+      // htopn.debug(); //OK
+      NonEqualHT(loctestnum2, loctesterr2, htopn, htopn2);
+      
+      htopn2 = htopn;
+      for (ulong i = 0; i < 20; ++i) {
+        Remove(loctestnum2, loctesterr2, htopn, vc[i]);
+      }
+      Size(loctestnum2, loctesterr2, htopn, true, 0);
+      NonEqualHT(loctestnum2, loctesterr2, htopn, htopn2);
+
+      lasd::HashTableClsAdr<int> htopn3;
+      htopn3 = std::move(htopn2);
+      Size(loctestnum2, loctesterr2, htopn3, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum2, loctesterr2, htopn3, true, vc[i]);
+      }
+
+      lasd::HashTableClsAdr<int> htopn4(htopn3);
+      EqualHT(loctestnum2, loctesterr2, htopn3, htopn4);
+      htopn4.Resize(4000);
+      EqualHT(loctestnum2, loctesterr2, htopn3, htopn4);
+      for (ulong i = 20; i <120; ++i) { //inserisco 100
+        InsertC(loctestnum2, loctesterr2, htopn4, static_cast<int>(i));
+      }
+      Size(loctestnum2, loctesterr2, htopn4, true, 120);
+      NonEqualHT(loctestnum2, loctesterr2, htopn3, htopn4);
+      
+      htopn4.Resize(50);
+      // htopn4.debug();
+      for (ulong i = 20; i <120; ++i) { //inserisco 100
+        Remove(loctestnum2, loctesterr2, htopn4, static_cast<int>(i));
+      }
+
+      EqualHT(loctestnum2, loctesterr2, htopn3, htopn4);
+      
+      cout << "End of HashMap -- ClsAdr<int>  (Errors/Tests: " << loctesterr2 << "/" << loctestnum2 << ")" << endl;
+      testnum += loctestnum2;
+      testerr += loctesterr2;
     }
-
-    htopn.Resize(200);
-    Size(loctestnum, loctesterr, htopn, true, 20);
-    for(ulong i = 0; i<20; ++i){
-      Exists(loctestnum, loctesterr, htopn, true, vc[i]);
-    }
-
-    htopn.Resize(0);
-    Size(loctestnum, loctesterr, htopn, true, 20);
-    for(ulong i = 0; i<20; ++i){
-      Exists(loctestnum, loctesterr, htopn, true, vc[i]);
-    }
-
-    htopn.Clear();
-    Size(loctestnum, loctesterr, htopn, true, 0);
-    for(ulong i = 0; i<20; ++i){
-      Exists(loctestnum, loctesterr, htopn, false, vc[i]);
-    }
-
-    lasd::HashTableOpnAdr<int> htopn2;
-    htopn2 = htopn;
-    Size(loctestnum, loctesterr, htopn2, true, 0);
-    // htopn2.debug(); //OK
-
-    htopn = std::move(htopn2);
-    // htopn.debug(); //OK
-
-    EqualHT(loctestnum, loctesterr, htopn, htopn2);
-
-    for (ulong i = 0; i < 20; ++i) {
-      InsertC(loctestnum, loctesterr, htopn, vc[i]);
-    }
-    NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
-    
-    htopn.Resize(0); // to min size
-    // htopn.debug(); //OK
-    NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
-    
-    htopn2 = htopn;
-    for (ulong i = 0; i < 20; ++i) {
-      Remove(loctestnum, loctesterr, htopn, vc[i]);
-    }
-    Size(loctestnum, loctesterr, htopn, true, 0);
-    NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
-
-    lasd::HashTableOpnAdr<int> htopn3;
-    htopn3 = std::move(htopn2);
-    Size(loctestnum, loctesterr, htopn3, true, 20);
-    for(ulong i = 0; i<20; ++i){
-      Exists(loctestnum, loctesterr, htopn3, true, vc[i]);
-    }
-
-    lasd::HashTableOpnAdr<int> htopn4(htopn3);
-    EqualHT(loctestnum, loctesterr, htopn3, htopn4);
-    htopn4.Resize(4000);
-    EqualHT(loctestnum, loctesterr, htopn3, htopn4);
-    for (ulong i = 20; i <120; ++i) { //inserisco 100
-      InsertC(loctestnum, loctesterr, htopn4, static_cast<int>(i));
-    }
-    Size(loctestnum, loctesterr, htopn4, true, 120);
-    NonEqualHT(loctestnum, loctesterr, htopn3, htopn4);
-    
-    htopn4.Resize(50);
-    // htopn4.debug();
-    for (ulong i = 20; i <120; ++i) { //inserisco 100
-      Remove(loctestnum, loctesterr, htopn4, static_cast<int>(i));
-    }
-
-    EqualHT(loctestnum, loctesterr, htopn3, htopn4);
-
-    /*
-      testare closeAddrs
-      testare altri tipi
-    */
 
   }
   catch (const std::exception& e) {
     loctestnum++; loctesterr++;
     cout << endl << "Unmanaged error! "<< e.what() << endl;
   }
-  cout << "End of HashTable Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
-  testnum += loctestnum;
-  testerr += loctesterr;
+  // cout << "End of HashTable<int> Test! (Errors/Tests: " << loctesterr+loctesterr2 << "/" << loctestnum+loctestnum2 << ")" << endl;
+  // testnum += loctestnum;
+  // testerr += loctesterr;
 }
+
+void MyTestHashDouble(uint &testnum, uint &testerr){
+  uint loctestnum = 0, loctesterr = 0;
+  try{
+
+    cout << "\nBegin of HashMap -- OpnAdr<double> Test:\n\n";
+    {
+      
+      lasd::Vector<double> vc(20);
+      for(ulong i = 0; i<20; ++i){
+        vc[i] = (i+0.5678);
+      }
+
+      lasd::BST<double> bst(vc);
+
+      lasd::HashTableOpnAdr<double> htopn(bst);
+
+      Size(loctestnum, loctesterr, htopn, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+      }
+
+      htopn.Resize(200);
+      Size(loctestnum, loctesterr, htopn, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+      }
+
+      htopn.Resize(0);
+      Size(loctestnum, loctesterr, htopn, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+      }
+
+      htopn.Clear();
+      Size(loctestnum, loctesterr, htopn, true, 0);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn, false, vc[i]);
+      }
+
+      lasd::HashTableOpnAdr<double> htopn2;
+      htopn2 = htopn;
+      Size(loctestnum, loctesterr, htopn2, true, 0);
+      // htopn2.debug(); //OK
+
+      htopn = std::move(htopn2);
+      // htopn.debug(); //OK
+
+      EqualHT(loctestnum, loctesterr, htopn, htopn2);
+
+      for (ulong i = 0; i < 20; ++i) {
+        InsertC(loctestnum, loctesterr, htopn, vc[i]);
+      }
+      NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
+      
+      htopn.Resize(0); // to min size
+      // htopn.debug(); //OK
+      NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
+      
+      htopn2 = htopn;
+      for (ulong i = 0; i < 20; ++i) {
+        Remove(loctestnum, loctesterr, htopn, vc[i]);
+      }
+      Size(loctestnum, loctesterr, htopn, true, 0);
+      NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
+
+      lasd::HashTableOpnAdr<double> htopn3;
+      htopn3 = std::move(htopn2);
+      Size(loctestnum, loctesterr, htopn3, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn3, true, vc[i]);
+      }
+
+      lasd::HashTableOpnAdr<double> htopn4(htopn3);
+      EqualHT(loctestnum, loctesterr, htopn3, htopn4);
+      htopn4.Resize(4000);
+      EqualHT(loctestnum, loctesterr, htopn3, htopn4);
+      for (ulong i = 20; i <120; ++i) { //inserisco 100
+        InsertC(loctestnum, loctesterr, htopn4, static_cast<double>(i));
+      }
+      Size(loctestnum, loctesterr, htopn4, true, 120);
+      NonEqualHT(loctestnum, loctesterr, htopn3, htopn4);
+      
+      htopn4.Resize(50);
+      // htopn4.debug();
+      for (ulong i = 20; i <120; ++i) { //inserisco 100
+        Remove(loctestnum, loctesterr, htopn4, static_cast<double>(i));
+      }
+
+      EqualHT(loctestnum, loctesterr, htopn3, htopn4);
+      cout << "End of HashMap -- OpnAdr<double>  (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+      testnum += loctestnum;
+      testerr += loctesterr;
+    }
+
+    loctestnum = 0, loctesterr = 0;
+    cout << "\nBegin of HashMap -- ClsAdr<double> Test:\n\n";
+    {
+      
+      lasd::Vector<double> vc(20);
+      for(ulong i = 0; i<20; ++i){
+        vc[i] = (i+0.58448);
+      }
+
+      lasd::BST<double> bst(vc);
+
+      lasd::HashTableClsAdr<double> htopn(bst);
+
+      Size(loctestnum, loctesterr, htopn, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+      }
+
+      htopn.Resize(200);
+      Size(loctestnum, loctesterr, htopn, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+      }
+
+      htopn.Resize(0);
+      Size(loctestnum, loctesterr, htopn, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn, true, vc[i]);
+      }
+
+      htopn.Clear();
+      Size(loctestnum, loctesterr, htopn, true, 0);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn, false, vc[i]);
+      }
+      
+      cout<<"debug1\n";
+      lasd::HashTableClsAdr<double> htopn2;
+      cout<<"debug2\n";
+      htopn2 = htopn;
+      cout<<"debug3\n";
+      Size(loctestnum, loctesterr, htopn2, true, 0);
+      // htopn2.debug(); //OK
+
+      htopn = std::move(htopn2);
+      // htopn.debug(); //OK
+
+      EqualHT(loctestnum, loctesterr, htopn, htopn2);
+
+      for (ulong i = 0; i < 20; ++i) {
+        InsertC(loctestnum, loctesterr, htopn, vc[i]);
+      }
+      NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
+      
+      htopn.Resize(0); // to min size
+      // htopn.debug(); //OK
+      NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
+      
+      htopn2 = htopn;
+      for (ulong i = 0; i < 20; ++i) {
+        Remove(loctestnum, loctesterr, htopn, vc[i]);
+      }
+      Size(loctestnum, loctesterr, htopn, true, 0);
+      NonEqualHT(loctestnum, loctesterr, htopn, htopn2);
+
+      lasd::HashTableClsAdr<double> htopn3;
+      htopn3 = std::move(htopn2);
+      Size(loctestnum, loctesterr, htopn3, true, 20);
+      for(ulong i = 0; i<20; ++i){
+        Exists(loctestnum, loctesterr, htopn3, true, vc[i]);
+      }
+
+      lasd::HashTableClsAdr<double> htopn4(htopn3);
+      EqualHT(loctestnum, loctesterr, htopn3, htopn4);
+      htopn4.Resize(4000);
+      EqualHT(loctestnum, loctesterr, htopn3, htopn4);
+      for (ulong i = 20; i <120; ++i) { //inserisco 100
+        InsertC(loctestnum, loctesterr, htopn4, static_cast<double>(i));
+      }
+      Size(loctestnum, loctesterr, htopn4, true, 120);
+      NonEqualHT(loctestnum, loctesterr, htopn3, htopn4);
+      
+      htopn4.Resize(50);
+      // htopn4.debug();
+      for (ulong i = 20; i <120; ++i) { //inserisco 100
+        Remove(loctestnum, loctesterr, htopn4, static_cast<double>(i));
+      }
+
+      EqualHT(loctestnum, loctesterr, htopn3, htopn4);
+
+      cout << "End of HashMap -- ClsAdr<double>  (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+      testnum += loctestnum;
+      testerr += loctesterr;
+    }
+
+  }
+  catch (const std::exception& e) {
+    loctestnum++; loctesterr++;
+    cout << endl << "Unmanaged error! "<< e.what() << endl;
+  }
+  // cout << "End of HashTable<double> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
+  // testnum += loctestnum;
+  // testerr += loctesterr;
+}
+
 
 void MyTestHashString(uint &testnum, uint &testerr){
   uint loctestnum = 0, loctesterr = 0;
@@ -993,10 +1404,13 @@ void MyTestHash(uint testnum, uint testerr){
   cout << "\nBegin of HashMap<int> Test:\n\n";
   MyTestHashInt(localtestnum, localtesterr);
 
+  cout << "\nBegin of HashMap<double> Test:\n\n";
+  MyTestHashDouble(localtestnum, localtesterr);
+
   cout << "\nBegin of HashMap<string> Test:\n\n";
   MyTestHashString(localtestnum, localtesterr);
 
-  cout<< "\nTest Vector (Errors/Tests: " << localtesterr << "/" << localtestnum << ")" << endl;
+  cout<< "\nTest HashMap (Errors/Tests: " << localtesterr << "/" << localtestnum << ")" << endl;
   testnum += localtestnum;
   testerr += localtesterr;
 }
