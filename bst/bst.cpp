@@ -263,11 +263,9 @@ namespace lasd {
 
     template <typename Data>
     bool BST<Data>::Insert(Data&& data){ // Override DictionaryContainer member (Move of the value)
-    
-        typename BinaryTreeLnk<Data>::NodeLnk* nodeIns = new typename BinaryTreeLnk<Data>::NodeLnk(std::move(data));
 
         if (this->Empty()) {
-            root = nodeIns;
+            root = new typename BinaryTreeLnk<Data>::NodeLnk(std::move(data));
         }else{
             
             typename BinaryTreeLnk<Data>::NodeLnk* current = root;
@@ -278,15 +276,16 @@ namespace lasd {
                 if (current->Element() > data) current = current->Sx;
                 else if (current->Element() < data) current = current->Dx;
                 else { // sto inserendo un duplicato
-                    delete nodeIns;
+                    // delete nodeIns;
                     return false;
                 }
             }
 
+            // typename BinaryTreeLnk<Data>::NodeLnk* nodeIns = new typename BinaryTreeLnk<Data>::NodeLnk(std::move(data));
             if (parent->Element() > data) {
-                parent->Sx = nodeIns;
+                parent->Sx = new typename BinaryTreeLnk<Data>::NodeLnk(std::move(data));
             } else {
-                parent->Dx = nodeIns;
+                parent->Dx = new typename BinaryTreeLnk<Data>::NodeLnk(std::move(data));
             }
     
         }
@@ -320,7 +319,12 @@ namespace lasd {
         // std::cout<<"[BST exist] data  = "<<data<<" ";
         if( root != nullptr ){
             typename BinaryTreeLnk<Data>::NodeLnk* current = root;
-            // std::cout<<"current: "<<current->Element()<<" ";
+            
+            // std::cout<<" current ("<<current->Element()<<") ";
+            // if (current->Dx == nullptr) std::cout<<" DX null ";
+            // if (current->Sx == nullptr) std::cout<<" SX null ";
+            // else std::cout<<" SX ("<<current->Sx->Element()<<") ";
+
             while ( current != nullptr ) {
 
                 if( current->Element() > data ) current = current->Sx;

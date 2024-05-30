@@ -51,7 +51,7 @@ public:
   bool operator==(const HashTable&) const noexcept = delete; // Comparison of abstract hashtable is possible but not required.
   bool operator!=(const HashTable&) const noexcept = delete; // Comparison of abstract hashtable is possible but not required.
 
-  virtual void debug(){
+  virtual void debug(){ //del
     
     std::cout<<"#element: "<<size<<" alloc (M): "<<M<<"\n";
 

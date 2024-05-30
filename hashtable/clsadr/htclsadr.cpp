@@ -222,6 +222,8 @@ namespace lasd {
     template <typename Data>
     void HashTableClsAdr<Data>::Resize(const ulong newSize){
 
+        if(newSize == 0) return Clear();
+
         HashTableClsAdr<Data>* newHashTable = new HashTableClsAdr(newSize);
 
         this->hashTable.Traverse(

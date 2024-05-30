@@ -64,21 +64,21 @@ public:
   // Specific member functions (inherited from ClearableContainer)
   void  Clear() override; // Override Container member
 
-  // void debug() override {
+  void debug() override { //del
     
-  //   std::cout<<"#element: "<<size<<" alloc (M): "<<M<<" real vec size: "<<hashTable.Size()<<"\n";
+    std::cout<<"#element: "<<size<<" alloc (M): "<<M<<" real vec size: "<<hashTable.Size()<<"\n";
     
-  //   for (ulong i {0}; i<M; i++){
+    for (ulong i {0}; i<M; i++){
       
-  //     if(hashTable[i]!=nullptr){
-  //       std::cout<<"["<<i<<"] ";
-  //       hashTable[i]->Traverse([](const Data& data){std::cout<<data<<" --- ";});
-  //       std::cout<<"\n";
-  //     }
+      if(hashTable[i]!=nullptr){
+        std::cout<<"["<<i<<"] ";
+        hashTable[i]->Traverse([](const Data& data){std::cout<<data<<" --- ";});
+        std::cout<<"\n";
+      }
 
-  //   }
+    }
 
-  // }
+  }
 
 };
 

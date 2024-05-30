@@ -310,6 +310,8 @@ namespace lasd {
     template <typename Data>
     void HashTableOpnAdr<Data>::Resize(const ulong newSize){
         
+        if(newSize == 0) return Clear();
+
         HashTableOpnAdr<Data>* newHashTable = new HashTableOpnAdr<Data>(newSize);
 
         this->hashTable.Traverse(

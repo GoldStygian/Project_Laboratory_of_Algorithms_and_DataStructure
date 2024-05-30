@@ -3,6 +3,11 @@
 
 #include <iostream>
 
+// Resize(0) retur Clear()
+// Marsene Twister
+// HashKey
+// doppio hash
+
 int main() {
     
     std::cout << "Lasd Libraries 2024" << std::endl;
