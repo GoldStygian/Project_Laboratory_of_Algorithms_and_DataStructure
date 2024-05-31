@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-// Resize(0) retur Clear()
 // Marsene Twister
 // HashKey
 // doppio hash

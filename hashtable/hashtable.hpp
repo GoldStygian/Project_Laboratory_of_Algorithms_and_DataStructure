@@ -5,7 +5,7 @@
 
 #include "../container/dictionary.hpp"
 
-#define MIN_SIZE 100
+#define MIN_SIZE 101
 #define RESIZE_FACTOR 2
 
 namespace lasd {
@@ -35,8 +35,6 @@ protected:
   ulong M {0}; // perche Size() ritorna il numero di elementi non M
 
 public:
-
-  // ulong M {0}; // perche Size() ritorna il numero di elementi non M
 
   // Destructor
   ~HashTable() = default;

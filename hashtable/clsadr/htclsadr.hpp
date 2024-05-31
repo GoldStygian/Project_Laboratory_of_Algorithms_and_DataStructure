@@ -8,7 +8,7 @@
 namespace lasd {
 
 template <typename Data>
-class HashTableClsAdr: virtual public HashTable<Data> { //hashing aperto
+class HashTableClsAdr: virtual public HashTable<Data> {
 // Must extend HashTable<Data>
 
 private:

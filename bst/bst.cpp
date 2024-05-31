@@ -388,18 +388,18 @@ namespace lasd {
     template <typename Data>
     typename BinaryTreeLnk<Data>::NodeLnk* BST<Data>::RemoveHelper(typename BinaryTreeLnk<Data>::NodeLnk* node, const Data& data){
         
-        if(node == nullptr) std::cout<<" is Null ";
-        else std::cout<<" value node: "<<node->Element();
+        // if(node == nullptr) std::cout<<" is Null ";
+        // else std::cout<<" value node: "<<node->Element();
         if (node != nullptr){
             if(node->Element() > data){
-                std::cout<<"Sx ";
+                // std::cout<<"Sx ";
                 node->Sx = RemoveHelper(node->Sx, data);//if(node->HasLeftChild()) node->Sx = RemoveHelper(node->Sx, data);
             }else if (node->Element() < data){
-                std::cout<<"Dx";
+                // std::cout<<"Dx";
                 node->Dx = RemoveHelper(node->Dx, data);//if(node->HasRightChild()) node->Dx = RemoveHelper(node->Dx, data);
             }else{ // data == Element() ho trovato il dato
                 node = DeleteNode(node);
-                std::cout<<" FIND! ";
+                // std::cout<<" FIND! ";
                 --size;
             }
         }

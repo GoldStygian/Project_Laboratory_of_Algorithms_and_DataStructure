@@ -287,9 +287,10 @@ namespace lasd {
         if (index != M) {
 
             hashTable[index]->deleted = true;
-            // delete hashTable[index]->element;
 
             --size;
+
+            return true;
  
         }
 
